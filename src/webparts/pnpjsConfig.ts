@@ -1,17 +1,12 @@
 import { WebPartContext } from "@microsoft/sp-webpart-base";
 import { spfi, SPFI, SPFx } from "@pnp/sp";
-import { LogLevel, PnPLogging } from "@pnp/logging";
+// import { LogLevel, PnPLogging } from "@pnp/logging";
 
-import "@pnp/sp/webs";
-import "@pnp/sp/lists";
-import "@pnp/sp/items";
-import "@pnp/sp/batching";
+let _sp: SPFI | null = null; //this meants it can both be null and type spfi
 
-var _sp: SPFI;
-
-export const getSP = (context?: WebPartContext): SPFI => {
+export const getSP = (context?: WebPartContext): SPFI | null => {
   if (_sp === null && context != null) {
-    _sp = spfi().using(SPFx(context)).using(PnPLogging(LogLevel.Warning));
+    _sp = spfi(context.pageContext.site.absoluteUrl).using(SPFx(context));
   }
   return _sp;
 };

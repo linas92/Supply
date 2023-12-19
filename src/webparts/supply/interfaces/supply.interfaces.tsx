@@ -9,3 +9,11 @@ export interface ISupplyRequest{
     // AssignedManager: boolean;
     // Status: string;
 }
+
+// export interface ISupplyRequestType{
+//     Id: number;
+//     Title: string;
+//     DisplayOrder: number;
+//     RequestArea: string;
+//     Tags: string;
+// }

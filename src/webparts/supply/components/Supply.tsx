@@ -31,6 +31,10 @@ const Supply: React.FC<ISupplyProps> = (props: ISupplyProps): JSX.Element => {
       <div className={styles.welcome}>
         <h2>Well done, {escape(userDisplayName)}!</h2>
         <div>{environmentMessage}</div>
+        {requestItems.map((item,index)=>{
+
+          return <div>{item.Id} - {item.Title}</div>
+        })}
         <div>
           Web part property value: <strong>{escape(description)}</strong>
         </div>

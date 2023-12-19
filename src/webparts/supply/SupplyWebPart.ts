@@ -32,7 +32,7 @@ export default class SupplyWebPart extends BaseClientSideWebPart<ISupplyWebPartP
         context: this.context,
       }
     );
-      console.log("WP CONTEXT",this.context);
+    console.log("WP CONTEXT", this.context);
     ReactDom.render(element, this.domElement);
   }
 

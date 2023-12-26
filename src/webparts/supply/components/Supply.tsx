@@ -1,18 +1,12 @@
 import * as React from "react";
 import styles from "./Supply.module.scss";
-import type { ISupplyProps } from "./ISupplyProps";
+import type { ISupplyProps } from "../interfaces/ISupplyProps";
 import { escape } from "@microsoft/sp-lodash-subset";
 import SupplyServices from "../services/services";
 import { ISupplyRequest } from "../interfaces/supply.interfaces";
 
 const Supply: React.FC<ISupplyProps> = (props: ISupplyProps): JSX.Element => {
-  const {
-    description,
-    environmentMessage,
-    hasTeamsContext,
-    userDisplayName,
-    context,
-  } = props;
+  const {userDisplayName, context } = props;
   const Services: SupplyServices = new SupplyServices(context);
 
   const [requestItems, setRequestItems] = React.useState<ISupplyRequest[]>([]);
@@ -24,23 +18,19 @@ const Supply: React.FC<ISupplyProps> = (props: ISupplyProps): JSX.Element => {
   }, []);
 
   return (
-    <section
-      className={`${styles.supply} ${hasTeamsContext ? styles.teams : ""}`}
-    >
+    <section>
       <div>{requestItems.length}</div>
       <div className={styles.welcome}>
         <h2>Well done, {escape(userDisplayName)}!</h2>
-        <div>{environmentMessage}</div>
         {requestItems.map((item, index) => {
           return (
             <div>
-              {item.Id} - {item.Title}
+              {item.Id}.{item.Title}.{item.Status}.{item.DueDate}.
+              {item.ExecutionDate}{item.RequestType}{item.RequestArea}.
+              {item.AssignedManager}
             </div>
           );
         })}
-        <div>
-          Web part property value: <strong>{escape(description)}</strong>
-        </div>
       </div>
     </section>
   );

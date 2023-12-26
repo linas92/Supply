@@ -25,9 +25,8 @@ const Supply: React.FC<ISupplyProps> = (props: ISupplyProps): JSX.Element => {
         {requestItems.map((item, index) => {
           return (
             <div>
-              ID: {item.Id}|Title: {item.Title}|Status: {item.Status}|Request
-              type: {item.RequestType}|Request area: {item.RequestArea}|Assigned
-              manager: {item.AssignedManager}
+              {item.Id}|{item.Title}|{item.Status}|{item.RequestType}|
+              {item.RequestArea}|{item.AssignedManager}
             </div>
           );
         })}

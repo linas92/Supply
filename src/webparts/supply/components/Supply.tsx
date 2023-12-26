@@ -6,7 +6,7 @@ import SupplyServices from "../services/services";
 import { ISupplyRequest } from "../interfaces/supply.interfaces";
 
 const Supply: React.FC<ISupplyProps> = (props: ISupplyProps): JSX.Element => {
-  const {userDisplayName, context } = props;
+  const { userDisplayName, context } = props;
   const Services: SupplyServices = new SupplyServices(context);
 
   const [requestItems, setRequestItems] = React.useState<ISupplyRequest[]>([]);
@@ -25,9 +25,9 @@ const Supply: React.FC<ISupplyProps> = (props: ISupplyProps): JSX.Element => {
         {requestItems.map((item, index) => {
           return (
             <div>
-              {item.Id}.{item.Title}.{item.Status}.{item.DueDate}.
-              {item.ExecutionDate}{item.RequestType}{item.RequestArea}.
-              {item.AssignedManager}
+              ID: {item.Id}|Title: {item.Title}|Status: {item.Status}|Request
+              type: {item.RequestType}|Request area: {item.RequestArea}|Assigned
+              manager: {item.AssignedManager}
             </div>
           );
         })}

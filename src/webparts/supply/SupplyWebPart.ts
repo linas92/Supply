@@ -10,8 +10,6 @@ import {
   PropertyPaneCheckbox,
 } from "@microsoft/sp-property-pane";
 import { BaseClientSideWebPart } from "@microsoft/sp-webpart-base";
-// import { IReadonlyTheme } from "@microsoft/sp-component-base";
-// import * as strings from "SupplyWebPartStrings";
 import Supply from "./components/Supply";
 import { ISupplyProps } from "./interfaces/ISupplyProps";
 import SharePointService from "./services/SharePointServices";
@@ -48,7 +46,7 @@ export default class SupplyWebPart extends BaseClientSideWebPart<ISupplyWebPartP
   }
 
   public onInit(): Promise<void> {
-    return super.onInit().then(() =>{
+    return super.onInit().then(() => {
       SharePointService.setup(this.context, Environment.type);
     });
   }
@@ -175,7 +173,7 @@ export default class SupplyWebPart extends BaseClientSideWebPart<ISupplyWebPartP
                 //   style: PropertyFieldColorPickerStyle.Full,
                 //   iconName: 'Precipitation',
                 //   key: 'colorFieldId'
-                // }),                
+                // }),
               ],
             },
           ],

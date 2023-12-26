@@ -2,14 +2,14 @@ import { SPFI } from "@pnp/sp";
 import { getSP } from "../../pnpjsConfig";
 import { WebPartContext } from "@microsoft/sp-webpart-base";
 import {
-  ISupplyRequest, ISupplyRequestType,
+  ISupplyRequest,
+  ISupplyRequestType,
 } from "../interfaces/supply.interfaces";
 
 import "@pnp/sp/webs";
 import "@pnp/sp/lists";
 import "@pnp/sp/items";
 import "@pnp/sp/batching";
-
 
 export default class SupplyServices {
   private sp: SPFI;
@@ -32,12 +32,10 @@ export default class SupplyServices {
       .items();
     return items;
   };
-    public getTypeListItems = async(): Promise<ISupplyRequestType[]> =>{
-      const items: ISupplyRequestType[] = await this.sp.web.lists
+  public getTypeListItems = async (): Promise<ISupplyRequestType[]> => {
+    const items: ISupplyRequestType[] = await this.sp.web.lists
       .getByTitle(this.requests)
       .items();
     return items;
-    }
-  }
-
-  
+  };
+}

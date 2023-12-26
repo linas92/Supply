@@ -10,4 +10,5 @@ export interface ISupplyProps {
   hasTeamsContext: boolean;
   userDisplayName: string;
   context: WebPartContext;
+  webURL: string;
 }

@@ -13,6 +13,7 @@
   },
   "externals": {},
   "localizedResources": {
-    "SupplyWebPartStrings": "lib/webparts/supply/loc/{locale}.js"
+    "SupplyWebPartStrings": "lib/webparts/supply/loc/{locale}.js",
+    "ControlStrings": "node_modules/@pnp/spfx-controls-react/lib/loc/{locale}.js"
   }
 }

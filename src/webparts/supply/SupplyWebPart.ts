@@ -38,6 +38,7 @@ export default class SupplyWebPart extends BaseClientSideWebPart<ISupplyWebPartP
         environmentMessage: this._environmentMessage,
         hasTeamsContext: !!this.context.sdks.microsoftTeams,
         userDisplayName: this.context.pageContext.user.displayName,
+        webURL: this.context.pageContext.web.absoluteUrl,
         context: this.context,
       }
     );

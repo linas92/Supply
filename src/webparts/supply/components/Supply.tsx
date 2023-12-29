@@ -5,15 +5,16 @@ import { escape } from "@microsoft/sp-lodash-subset";
 import SupplyServices from "../services/services";
 import { ISupplyRequest } from "../interfaces/supply.interfaces";
 import { DefaultButton } from "@fluentui/react";
+import Counter from "./Counter";
+import RemindersList from "./RemindersList";
 
 const Supply: React.FC<ISupplyProps> = (props: ISupplyProps): JSX.Element => {
   const { userDisplayName, context } = props;
   const Services: SupplyServices = new SupplyServices(context);
 
-
-  function _alertClicked(): any { 
+  const _alertClicked = (): any => {
     alert("HA! Nothing happened!");
-  }
+  };
 
   const [requestItems, setRequestItems] = React.useState<ISupplyRequest[]>([]);
   React.useEffect(() => {
@@ -25,6 +26,7 @@ const Supply: React.FC<ISupplyProps> = (props: ISupplyProps): JSX.Element => {
 
   return (
     <section>
+      {/* THIS IS A PLAYGROUND FOR NOW */}
       <DefaultButton
         text="New Request"
         onClick={_alertClicked}
@@ -33,8 +35,19 @@ const Supply: React.FC<ISupplyProps> = (props: ISupplyProps): JSX.Element => {
       <br />
       <br />
       <div className={styles.welcome}>
+        <div>
+          <Counter label="stuff" buttonLabel="║╖║" />
+        </div>
+        <div>
+          <Counter label="EX" initialCount={12} buttonLabel="◘" />
+        </div>
+        <div>
+          <RemindersList listName={"Things to do:"} />
+        </div>
+        {/* THIS IS A PLAYGROUND FOR NOW */}
+
         <h2>Well done, {escape(userDisplayName)}!</h2>
-        {requestItems.map((item, index) => {
+        {requestItems.map((item) => {
           return (
             <div>
               {item.Id}|{item.Title}|{item.Status}|{item.RequestType}|
@@ -49,9 +62,6 @@ const Supply: React.FC<ISupplyProps> = (props: ISupplyProps): JSX.Element => {
 
 export default Supply;
 
-
 /*
 https://tgtj2.sharepoint.com/sites/SupplyDepartment/_api/
-
-MAKE THE FUCNTION A CONSTANT AS A "CONST" and not a fucntion
 */

@@ -22,8 +22,6 @@ export const ButtonDefaultExample: React.FunctionComponent<IButtonExampleProps> 
   );
 };
 
-// export class newClassForExport {
-  function _alertClicked(): any {
-    alert('HA! Nothing happened!');
-}
-// }
+  const _alertClicked =(): any => {
+    alert("HA! Nothing happened!");
+  }

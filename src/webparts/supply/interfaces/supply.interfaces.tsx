@@ -2,10 +2,10 @@ export interface ISupplyRequest {
   Id: number;
   Title: string;
   Status: string;
-  AssignedManager: boolean;
+  AssignedManager: Array<{ Id: number; Title: string; Email: string }>;
   DueDate: Date;
   ExecutionDate: Date;
-  RequestType: Boolean;
+  RequestType: { LookupId: number; LookupValue: string };
   RequestArea: string;
   Description: string;
 }

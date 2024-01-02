@@ -49,7 +49,7 @@ export default class SupplyWebPart extends BaseClientSideWebPart<ISupplyWebPartP
   public onInit(): Promise<void> {
     return super.onInit().then(() => {
       SharePointService.setup(this.context, Environment.type);
-      
+
       // SharePointService.getLists().then((lists) => {
       //   console.log(lists);
       // });

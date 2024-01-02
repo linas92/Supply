@@ -24,8 +24,6 @@ export default class RemindersList extends React.Component<
     //Setting our initial state
     this.state = {
       reminders: [
-        "Get good at react",
-        "Learn SPFx",
       ],
       newReminderLabel: "",
     };

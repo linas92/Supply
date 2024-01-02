@@ -18,11 +18,15 @@ export default class RemindersList extends React.Component<
     super(props);
     //Binding our methods
     this.updateNewReminderLabel = this.updateNewReminderLabel.bind(this);
-    this.addNewreminder = this.addNewreminder.bind(this);
+    this.addNewReminder = this.addNewReminder.bind(this);
+    this.updateReminder = this.updateReminder.bind(this);
 
     //Setting our initial state
     this.state = {
-      reminders: ["Get good at react", "Learn SPFx"],
+      reminders: [
+        "Get good at react",
+        "Learn SPFx",
+      ],
       newReminderLabel: "",
     };
   }
@@ -33,7 +37,17 @@ export default class RemindersList extends React.Component<
         <ul>
           <h1>{this.props.listName}</h1>
           {this.state.reminders.map((reminder, index) => {
-            return <li key={index}><Reminder reminder={reminder}/></li>;
+            return (
+              <li key={index}>
+                <Reminder
+                  reminder={reminder}
+                  updateReminder={(value: string) =>
+                    this.updateReminder(index, value)
+                  }
+                  deleteReminder={() => this.deleteReminder(index)}
+                />
+              </li>
+            );
           })}
         </ul>
         <input
@@ -41,7 +55,7 @@ export default class RemindersList extends React.Component<
           value={this.state.newReminderLabel}
           onChange={this.updateNewReminderLabel}
         />
-        <button onClick={this.addNewreminder}>+</button>
+        <button onClick={this.addNewReminder}>+</button>
       </div>
     );
   }
@@ -54,11 +68,30 @@ export default class RemindersList extends React.Component<
     });
   }
 
-  public addNewreminder(): void {
+  public addNewReminder(): void {
     if (!this.state.newReminderLabel.length) return;
+
     this.setState({
       reminders: [...this.state.reminders, this.state.newReminderLabel],
       newReminderLabel: "",
+    });
+  }
+
+  public updateReminder(index: number, value: string): void {
+    const updatedReminders = this.state.reminders;
+    updatedReminders[index] = value;
+
+    this.setState({
+      reminders: updatedReminders,
+    });
+  }
+
+  public deleteReminder(index: number): void {
+    const updatedReminders = this.state.reminders;
+    updatedReminders.splice(index, 1);
+
+    this.setState({
+      reminders: updatedReminders,
     });
   }
 }

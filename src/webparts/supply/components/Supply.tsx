@@ -4,7 +4,7 @@ import type { ISupplyProps } from "../interfaces/ISupplyProps";
 import { escape } from "@microsoft/sp-lodash-subset";
 import SupplyServices from "../services/services";
 import { ISupplyRequest } from "../interfaces/supply.interfaces";
-import { DefaultButton } from "@fluentui/react";
+import { DefaultButton, DetailsList, DetailsListLayoutMode, IColumn, SelectionMode } from "@fluentui/react";
 import Counter from "./Counter";
 import RemindersList from "./RemindersList";
 
@@ -24,9 +24,60 @@ const Supply: React.FC<ISupplyProps> = (props: ISupplyProps): JSX.Element => {
     });
   }, []);
 
+  const columns: IColumn[] = [
+    {
+      key: "column1",
+      name: "ID",
+      fieldName: "Id",
+      minWidth: 50,
+      maxWidth: 100,
+      isResizable: true,
+    },
+    {
+      key: "column2",
+      name: "Title",
+      fieldName: "Title",
+      minWidth: 100,
+      maxWidth: 200,
+      isResizable: true,
+    },
+    {
+      key: "column3",
+      name: "Status",
+      fieldName: "Status",
+      minWidth: 100,
+      maxWidth: 200,
+      isResizable: true,
+    },
+    {
+      key: "column4",
+      name: "Request Type",
+      fieldName: "RequestType",
+      minWidth: 100,
+      maxWidth: 200,
+      isResizable: true,
+    },
+    {
+      key: "column5",
+      name: "Request Area",
+      fieldName: "RequestArea",
+      minWidth: 100,
+      maxWidth: 200,
+      isResizable: true,
+    },
+    {
+      key: "column6",
+      name: "Assigned Manager",
+      fieldName: "AssignedManager",
+      minWidth: 100,
+      maxWidth: 200,
+      isResizable: true,
+    },
+  ];
+
   return (
     <section>
-      {/* THIS IS A PLAYGROUND FOR NOW */}
+      {/* PLAYGROUND FOR LEARNING ↓BELLOW↓ */}
       <DefaultButton
         text="New Request"
         onClick={_alertClicked}
@@ -44,17 +95,23 @@ const Supply: React.FC<ISupplyProps> = (props: ISupplyProps): JSX.Element => {
         <div>
           <RemindersList listName={"Things to do:"} />
         </div>
-        {/* THIS IS A PLAYGROUND FOR NOW */}
+        {/* PLAYGROUND FOR LEARNING ↑ABOVE↑ */}
 
         <h2>Well done, {escape(userDisplayName)}!</h2>
-        {requestItems.map((item) => {
+        <DetailsList
+          items={requestItems}
+          columns={columns}
+          selectionMode={SelectionMode.none}
+          layoutMode={DetailsListLayoutMode.fixedColumns}
+        />
+        {/* {requestItems.map((item) => {
           return (
             <div>
               {item.Id}|{item.Title}|{item.Status}|{item.RequestType}|
               {item.RequestArea}|{item.AssignedManager}
             </div>
           );
-        })}
+        })} */}
       </div>
     </section>
   );

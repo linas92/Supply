@@ -1,26 +1,18 @@
 import * as React from "react";
-// import styles from "./Supply.module.scss";
 import type { ISupplyProps } from "../interfaces/ISupplyProps";
 import { escape } from "@microsoft/sp-lodash-subset";
 import SupplyServices from "../services/services";
 import { ISupplyRequest } from "../interfaces/supply.interfaces";
 import {
-  // DefaultButton,
   DetailsList,
   DetailsListLayoutMode,
   IColumn,
   SelectionMode,
 } from "@fluentui/react";
-// import Counter from "./Counter";
-// import RemindersList from "./RemindersList";
 
 const Supply: React.FC<ISupplyProps> = (props: ISupplyProps): JSX.Element => {
   const { userDisplayName, context } = props;
   const Services: SupplyServices = new SupplyServices(context);
-
-  // const _alertClicked = (): any => {
-  //   alert("HA! Nothing happened!");
-  // };
 
   const [requestItems, setRequestItems] = React.useState<ISupplyRequest[]>([]);
   React.useEffect(() => {
@@ -49,17 +41,35 @@ const Supply: React.FC<ISupplyProps> = (props: ISupplyProps): JSX.Element => {
     },
     {
       key: "column3",
-      name: "Request Type",
-      fieldName: "RequestType",
+      name: "Assigned Manager",
+      fieldName: "AssignedManager",
       minWidth: 100,
       maxWidth: 200,
       isResizable: true,
-      // onRender: (item: ISupplyRequest) => {
-      //   return item.RequestType ? item.RequestType.LookupValue : "";
-      // },
+      onRender: (item: ISupplyRequest) => {
+        const managers = item.AssignedManager || [];
+        if (managers.length > 0) {
+          return managers[0].Title || "";
+        } else {
+          return "";
+        }
+      },
     },
     {
       key: "column4",
+      name: "Due Date",
+      fieldName: "DueDate",
+      minWidth: 100,
+      maxWidth: 200,
+      isResizable: true,
+      onRender: (item: ISupplyRequest) => {
+        const dueDate = item.DueDate || null;
+        const formattedDueDate = dueDate ? dueDate.toLocaleDateString() : "";
+        return formattedDueDate;
+      },
+    },
+    {
+      key: "column5",
       name: "Request Area",
       fieldName: "RequestArea",
       minWidth: 100,
@@ -67,44 +77,28 @@ const Supply: React.FC<ISupplyProps> = (props: ISupplyProps): JSX.Element => {
       isResizable: true,
     },
     {
-      key: "column5",
-      name: "Assigned Manager",
-      fieldName: "AssignedManager",
+      key: "column6",
+      name: "Request Type",
+      fieldName: "RequestType",
       minWidth: 100,
       maxWidth: 200,
       isResizable: true,
-      // onRender: (item: ISupplyRequest) => {
-      //   const managers = item.AssignedManager || [];
-
-      //   if (managers.length > 0) {
-      //     return managers[0].Title || "";
-      //   } else {
-      //     return "";
-      //   }
-      // },
+      onRender: (item: ISupplyRequest) => {
+        return item.RequestType ? item.RequestType.LookupValue : "";
+      },
+    },
+    {
+      key: "column7",
+      name: "Description",
+      fieldName: "Description",
+      minWidth: 100,
+      maxWidth: 200,
+      isResizable: true,
     },
   ];
+
   return (
     <section>
-      {/* PLAYGROUND FOR LEARNING ↓BELLOW↓ */}
-      {/* <DefaultButton
-        text="New Request"
-        onClick={_alertClicked}
-        allowDisabledFocus
-      />
-      <br />
-      <br />
-      <div className={styles.welcome}>
-        <div>
-          <Counter label="stuff" buttonLabel="║╖║" />
-        </div>
-        <div>
-          <Counter label="EX" initialCount={12} buttonLabel="◘" />
-        </div>
-        <div>
-          <RemindersList listName={"Things to do:"} />
-        </div> */}
-      {/* PLAYGROUND FOR LEARNING ↑ABOVE↑ */}
       <h2>Well done, {escape(userDisplayName)}!</h2>
       <DetailsList
         items={requestItems}
@@ -112,21 +106,8 @@ const Supply: React.FC<ISupplyProps> = (props: ISupplyProps): JSX.Element => {
         selectionMode={SelectionMode.none}
         layoutMode={DetailsListLayoutMode.fixedColumns}
       />
-      {/* {requestItems.map((item) => {
-          return (
-            <div>
-              {item.Id}|{item.Title}|{item.Status}|{item.RequestType}|
-              {item.RequestArea}|{item.AssignedManager}
-            </div>
-          );
-        })} */}
-      {/* </div> */}
     </section>
   );
 };
 
 export default Supply;
-
-/*
-https://tgtj2.sharepoint.com/sites/SupplyDepartment/_api/
-*/

@@ -14,6 +14,9 @@ const stackTokens: IStackTokens = { childrenGap: 40 };
 export const ButtonDefaultExample: React.FunctionComponent<IButtonExampleProps> = props => {
   const { disabled, checked } = props;
 
+  const _alertClicked =(): any => {
+    alert("HA! Nothing happened!");
+  }
   return (
     <Stack horizontal tokens={stackTokens}>
       <DefaultButton text="Standard" onClick={_alertClicked} allowDisabledFocus disabled={disabled} checked={checked} />
@@ -22,6 +25,3 @@ export const ButtonDefaultExample: React.FunctionComponent<IButtonExampleProps> 
   );
 };
 
-  const _alertClicked =(): any => {
-    alert("HA! Nothing happened!");
-  }

@@ -1,4 +1,4 @@
-import { IRequestListItemCollection } from "../../services/IRequestListItem";
+import { IRequestListItemCollection } from "../IRequestListItem";
 
 export const RequestListItemCollection: IRequestListItemCollection = {
   value: [

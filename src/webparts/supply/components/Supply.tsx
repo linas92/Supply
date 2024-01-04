@@ -1,6 +1,5 @@
 import * as React from "react";
 import type { ISupplyProps } from "../interfaces/ISupplyProps";
-import { escape } from "@microsoft/sp-lodash-subset";
 import SupplyServices from "../services/services";
 import { ISupplyRequest } from "../interfaces/supply.interfaces";
 import {
@@ -9,17 +8,45 @@ import {
   IColumn,
   SelectionMode,
 } from "@fluentui/react";
+import { DefaultButton } from "@fluentui/react";
+import { DynamicForm } from "@pnp/spfx-controls-react/lib/DynamicForm";
 
 const Supply: React.FC<ISupplyProps> = (props: ISupplyProps): JSX.Element => {
-  const { userDisplayName, context } = props;
+  const { context } = props;
   const Services: SupplyServices = new SupplyServices(context);
+  const [showForm, setShowForm] = React.useState<boolean>(false);
+
+  const openForm = () => {
+    setShowForm(true);
+  };
+  // const closeForm = () => {
+  //   setShowForm(false);
+  // };
+
+  const formatDateForFrontend = (date: string | Date): string => {
+    const parsedDate = typeof date === "string" ? new Date(date) : date;
+
+    if (parsedDate instanceof Date && !isNaN(parsedDate.getTime())) {
+      return parsedDate.toLocaleDateString();
+    } else {
+      return "Invalid Date";
+    }
+  };
 
   const [requestItems, setRequestItems] = React.useState<ISupplyRequest[]>([]);
+
   React.useEffect(() => {
-    Services.getListItems().then((_response: ISupplyRequest[]) => {
-      setRequestItems(_response);
-      console.log(_response);
-    });
+    const fetchData = async () => {
+      try {
+        const response = await Services.getListItems();
+        setRequestItems(response);
+        console.log(response);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
   }, []);
 
   const columns: IColumn[] = [
@@ -41,35 +68,18 @@ const Supply: React.FC<ISupplyProps> = (props: ISupplyProps): JSX.Element => {
     },
     {
       key: "column3",
-      name: "Assigned Manager",
-      fieldName: "AssignedManager",
-      minWidth: 100,
-      maxWidth: 200,
-      isResizable: true,
-      onRender: (item: ISupplyRequest) => {
-        const managers = item.AssignedManager || [];
-        if (managers.length > 0) {
-          return managers[0].Title || "";
-        } else {
-          return "";
-        }
-      },
-    },
-    {
-      key: "column4",
       name: "Due Date",
       fieldName: "DueDate",
       minWidth: 100,
       maxWidth: 200,
       isResizable: true,
       onRender: (item: ISupplyRequest) => {
-        const dueDate = item.DueDate || null;
-        const formattedDueDate = dueDate ? dueDate.toLocaleDateString() : "";
+        const formattedDueDate = formatDateForFrontend(item.DueDate);
         return formattedDueDate;
       },
     },
     {
-      key: "column5",
+      key: "column4",
       name: "Request Area",
       fieldName: "RequestArea",
       minWidth: 100,
@@ -77,7 +87,7 @@ const Supply: React.FC<ISupplyProps> = (props: ISupplyProps): JSX.Element => {
       isResizable: true,
     },
     {
-      key: "column6",
+      key: "column5",
       name: "Request Type",
       fieldName: "RequestType",
       minWidth: 100,
@@ -88,7 +98,7 @@ const Supply: React.FC<ISupplyProps> = (props: ISupplyProps): JSX.Element => {
       },
     },
     {
-      key: "column7",
+      key: "column6",
       name: "Description",
       fieldName: "Description",
       minWidth: 100,
@@ -99,7 +109,17 @@ const Supply: React.FC<ISupplyProps> = (props: ISupplyProps): JSX.Element => {
 
   return (
     <section>
-      <h2>Well done, {escape(userDisplayName)}!</h2>
+      <DefaultButton text="Create New Request" onClick={openForm} />
+      {showForm && (
+        <DynamicForm
+          context={props.context}
+          listId={""}
+          onCancelled={() => {
+            console.log("Cancelled");
+          }}
+        />
+      )}
+
       <DetailsList
         items={requestItems}
         columns={columns}

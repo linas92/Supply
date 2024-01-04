@@ -2,7 +2,6 @@ export interface ISupplyRequest {
   Id: number;
   Title: string;
   Status: string;
-  AssignedManager: Array<{ Id: number; Title: string; Email: string }>;
   DueDate: Date;
   ExecutionDate: Date;
   RequestType: { LookupId: number; LookupValue: string };

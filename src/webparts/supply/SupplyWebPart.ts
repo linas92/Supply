@@ -17,13 +17,9 @@ import SharePointService from "./services/SharePointServices";
 export interface ISupplyWebPartProps {
   title: string;
   description: string;
-  percentage: number;
-  showPercentageValue: boolean;
-  headerAlignment: string;
 }
 
 export default class SupplyWebPart extends BaseClientSideWebPart<ISupplyWebPartProps> {
-  private _isDarkTheme: boolean = false;
   private _environmentMessage: string = "";
 
   public render(): void {
@@ -31,10 +27,7 @@ export default class SupplyWebPart extends BaseClientSideWebPart<ISupplyWebPartP
       Supply,
       {
         title: this.properties.title,
-        percentage: this.properties.percentage,
-        showPercentageValue: this.properties.showPercentageValue,
         description: this.properties.description,
-        isDarkTheme: this._isDarkTheme,
         environmentMessage: this._environmentMessage,
         hasTeamsContext: !!this.context.sdks.microsoftTeams,
         userDisplayName: this.context.pageContext.user.displayName,
@@ -49,22 +42,6 @@ export default class SupplyWebPart extends BaseClientSideWebPart<ISupplyWebPartP
   public onInit(): Promise<void> {
     return super.onInit().then(() => {
       SharePointService.setup(this.context, Environment.type);
-
-      // SharePointService.getLists().then((lists) => {
-      //   console.log(lists);
-      // });
-
-      // SharePointService.getListItems(
-      //   "29111c7d-cff0-48f0-9b8e-0bcbfd6de75d"
-      // ).then((items) => {
-      //   console.log(items);
-      // });
-
-      // SharePointService.getListFields(
-      //   "29111c7d-cff0-48f0-9b8e-0bcbfd6de75d"
-      // ).then((fields) => {
-      //   console.log(fields);
-      // });
     });
   }
 
@@ -93,14 +70,6 @@ export default class SupplyWebPart extends BaseClientSideWebPart<ISupplyWebPartP
                 PropertyPaneTextField("description", {
                   label: "Description",
                 }),
-                // PropertyPaneDropdown("headerAlignment", {
-                //   label: "Header Alignment",
-                //   options: [
-                //     { key: "left", text: "Left" },
-                //     { key: "center", text: "Center" },
-                //     { key: "right", text: "Right" },
-                // ],
-                // }),
               ],
             },
             {
@@ -118,19 +87,6 @@ export default class SupplyWebPart extends BaseClientSideWebPart<ISupplyWebPartP
                 PropertyPaneCheckbox("showPercentageValue", {
                   text: "Show Percentage",
                 }),
-                // PropertyFieldColorPicker('fillColor', {
-                //   label: 'Color',
-                //   selectedColor: this.properties.fillColor,
-                //   onPropertyChange: this.onPropertyPaneFieldChanged,
-                //   properties: this.properties,
-                //   disabled: false,
-                //   debounce: 1000,
-                //   isHidden: false,
-                //   alphaSliderHidden: false,
-                //   style: PropertyFieldColorPickerStyle.Full,
-                //   iconName: 'Precipitation',
-                //   key: 'colorFieldId'
-                // }),
               ],
             },
           ],

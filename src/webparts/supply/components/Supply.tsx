@@ -49,6 +49,7 @@ const Supply: React.FC<ISupplyProps> = (props: ISupplyProps): JSX.Element => {
     fetchData();
   }, []);
 
+  //#region const columns: IColumn[] = [
   const columns: IColumn[] = [
     {
       key: "column1",
@@ -106,6 +107,7 @@ const Supply: React.FC<ISupplyProps> = (props: ISupplyProps): JSX.Element => {
       isResizable: true,
     },
   ];
+  //#endregion
 
   return (
     <section>
@@ -113,9 +115,14 @@ const Supply: React.FC<ISupplyProps> = (props: ISupplyProps): JSX.Element => {
       {showForm && (
         <DynamicForm
           context={props.context}
-          listId={""}
+          listId={"c8dd8f7c-f6a6-4b0d-a550-2389b114894f"}
           onCancelled={() => {
             console.log("Cancelled");
+            setShowForm(false);
+          }}
+          onSuccess={() => {
+            console.log("Success");
+            setShowForm(false);
           }}
         />
       )}

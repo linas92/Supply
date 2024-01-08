@@ -1,12 +1,20 @@
 export interface ISupplyRequest {
   Id: number;
   Title: string;
-  Status: string;
+  Description: string;
   DueDate: Date;
   ExecutionDate: Date;
-  RequestType: { LookupId: number; LookupValue: string };
+  RequestType: {
+    LookupId: number;
+    LookupValue: string;
+  };
   RequestArea: string;
-  Description: string;
+  AssignedManager: {
+    LookupId: number;
+    LookupValue: string;
+  };
+  Tags: string[];
+  Status: string;
 }
 
 export interface ISupplyRequestType {

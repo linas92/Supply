@@ -6,6 +6,7 @@ import {
   DetailsList,
   DetailsListLayoutMode,
   IColumn,
+  Modal,
   SelectionMode,
 } from "@fluentui/react";
 import { DefaultButton } from "@fluentui/react";
@@ -13,15 +14,28 @@ import { DynamicForm } from "@pnp/spfx-controls-react/lib/DynamicForm";
 
 const Supply: React.FC<ISupplyProps> = (props: ISupplyProps): JSX.Element => {
   const { context } = props;
+
   const Services: SupplyServices = new SupplyServices(context);
+
   const [showForm, setShowForm] = React.useState<boolean>(false);
+
+  const [showAllItems, setShowAllItems] = React.useState<boolean>(false);
+
+  const [displayedItemsCount, setDisplayedItemsCount] =
+    React.useState<number>(5);
 
   const openForm = () => {
     setShowForm(true);
   };
-  // const closeForm = () => {
-  //   setShowForm(false);
-  // };
+
+  const closeForm = () => {
+    setShowForm(false);
+  };
+
+  const toggleShowAllItems = () => {
+    setShowAllItems((prevShowAllItems) => !prevShowAllItems);
+    setDisplayedItemsCount((prevCount) => (prevCount === 5 ? 12 : 5));
+  };
 
   const formatDateForFrontend = (date: string | Date): string => {
     const parsedDate = typeof date === "string" ? new Date(date) : date;
@@ -113,26 +127,42 @@ const Supply: React.FC<ISupplyProps> = (props: ISupplyProps): JSX.Element => {
     <section>
       <DefaultButton text="Create New Request" onClick={openForm} />
       {showForm && (
-        <DynamicForm
-          context={props.context}
-          listId={"c8dd8f7c-f6a6-4b0d-a550-2389b114894f"}
-          onCancelled={() => {
-            console.log("Cancelled");
-            setShowForm(false);
-          }}
-          onSuccess={() => {
-            console.log("Success");
-            setShowForm(false);
-          }}
-        />
+        <Modal isOpen={showForm} onDismiss={closeForm} isBlocking={false}>
+          <DynamicForm
+            context={props.context}
+            listId={"c8dd8f7c-f6a6-4b0d-a550-2389b114894f"}
+            onCancelled={() => {
+              console.log("Cancelled");
+              setShowForm(false);
+            }}
+            onSuccess={() => {
+              console.log("Success");
+              setShowForm(false);
+            }}
+          />
+        </Modal>
       )}
 
       <DetailsList
-        items={requestItems}
+        items={
+          showAllItems
+            ? requestItems
+            : requestItems.slice(0, displayedItemsCount)
+        }
         columns={columns}
         selectionMode={SelectionMode.none}
         layoutMode={DetailsListLayoutMode.fixedColumns}
+        key={showAllItems.toString()}
       />
+
+      {requestItems.length > displayedItemsCount && (
+        <div>
+          <DefaultButton
+            text={showAllItems ? "Show Less" : "Show More"}
+            onClick={toggleShowAllItems}
+          />
+        </div>
+      )}
     </section>
   );
 };

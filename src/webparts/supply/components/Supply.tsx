@@ -1,6 +1,6 @@
 import * as React from "react";
 import "./Supply.module.scss";
-import type { ISupplyProps } from "../interfaces/ISupplyProps";
+import { ISupplyProps } from "../interfaces/ISupplyProps";
 import SupplyServices from "../services/services";
 import { ISupplyRequest } from "../interfaces/supply.interfaces";
 import {
@@ -12,32 +12,37 @@ import {
 } from "@fluentui/react";
 import { DefaultButton } from "@fluentui/react";
 import { DynamicForm } from "@pnp/spfx-controls-react/lib/DynamicForm";
+import { useEffect, useState } from "react";
 
-const Supply: React.FC<ISupplyProps> = (props: ISupplyProps): JSX.Element => {
+const Supply: React.FC<ISupplyProps> = (props) => {
   const { context } = props;
+  const Services = new SupplyServices(context);
 
-  const Services: SupplyServices = new SupplyServices(context);
+  const [showForm, setShowForm] = useState<boolean>(false);
+  const [showAllItems, setShowAllItems] = useState<boolean>(false);
+  const [displayedItemsCount, setDisplayedItemsCount] = useState<number>(5);
+  const [requestItems, setRequestItems] = useState<ISupplyRequest[]>([]);
 
-  const [showForm, setShowForm] = React.useState<boolean>(false);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await Services.getListItems();
+        setRequestItems(response);
+        console.log(response);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
 
-  const [showAllItems, setShowAllItems] = React.useState<boolean>(false);
+    fetchData();
+  }, []);
 
-  const [displayedItemsCount, setDisplayedItemsCount] =
-    React.useState<number>(5);
-
-  const openForm = () => {
-    setShowForm(true);
-  };
-
-  const closeForm = () => {
-    setShowForm(false);
-  };
+  const openForm = () => setShowForm(true);
+  const closeForm = () => setShowForm(false);
 
   const toggleShowAllItems = () => {
     setShowAllItems((prevShowAllItems) => !prevShowAllItems);
-    setDisplayedItemsCount((prevCount: number) =>
-      showAllItems ? prevCount + 5 : 0
-    );
+    setDisplayedItemsCount((prevCount) => (showAllItems ? prevCount + 5 : 0));
   };
 
   const formatDateForFrontend = (date: string | Date): string => {
@@ -52,57 +57,22 @@ const Supply: React.FC<ISupplyProps> = (props: ISupplyProps): JSX.Element => {
 
   const getStatusStyle = (status: string): React.CSSProperties => {
     const commonStyle: React.CSSProperties = {
-      padding: "4px 8px", // Adjust padding to your liking
-      borderRadius: "4px", // Add rounded corners
-      fontWeight: "bold", // Make the text bold
+      padding: "4px 8px",
+      borderRadius: "4px",
+      fontWeight: "bold",
     };
 
-    switch (status.toLowerCase()) {
-      case "new":
-        return {
-          ...commonStyle,
-          color: "white",
-          backgroundColor: "#3498db", // Softer blue
-        };
-      case "in progress":
-        return {
-          ...commonStyle,
-          color: "white",
-          backgroundColor: "#997c09", // Softer yellow
-        };
-      case "approved":
-        return {
-          ...commonStyle,
-          color: "white",
-          backgroundColor: "#19bf5f", // Softer green
-        };
-      case "rejected":
-        return {
-          ...commonStyle,
-          color: "white",
-          backgroundColor: "#da3d2c", // Softer red
-        };
-      default:
-        return {
-          ...commonStyle,
-        }; // Default style if status doesn't match any case
-    }
+    const statusColors: {
+      [key: string]: { color: string; backgroundColor: string };
+    } = {
+      new: { color: "white", backgroundColor: "#3498db" },
+      "in progress": { color: "white", backgroundColor: "#997c09" },
+      approved: { color: "white", backgroundColor: "#19bf5f" },
+      rejected: { color: "white", backgroundColor: "#da3d2c" },
+    };
+
+    return { ...commonStyle, ...(statusColors[status.toLowerCase()] || {}) };
   };
-  const [requestItems, setRequestItems] = React.useState<ISupplyRequest[]>([]);
-
-  React.useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await Services.getListItems();
-        setRequestItems(response);
-        console.log(response);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   //#region const columns: IColumn[] = [
   const columns: IColumn[] = [
@@ -124,7 +94,7 @@ const Supply: React.FC<ISupplyProps> = (props: ISupplyProps): JSX.Element => {
       onRender: (item: ISupplyRequest) => {
         const status = item.Status;
         const statusStyle = getStatusStyle(status);
-      
+
         return <div style={statusStyle}>{status}</div>;
       },
     },

@@ -38,4 +38,14 @@ export default class SupplyServices {
       .items();
     return items;
   };
+  public updateListItem = async (
+    listId: string,
+    itemId: number,
+    updatedValues: any
+  ): Promise<void> => {
+    await this.sp.web.lists
+      .getById(listId)
+      .items.getById(itemId)
+      .update(updatedValues);
+  };
 }

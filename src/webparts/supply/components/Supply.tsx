@@ -1,4 +1,5 @@
 import * as React from "react";
+import "./Supply.module.scss";
 import type { ISupplyProps } from "../interfaces/ISupplyProps";
 import SupplyServices from "../services/services";
 import { ISupplyRequest } from "../interfaces/supply.interfaces";
@@ -34,7 +35,9 @@ const Supply: React.FC<ISupplyProps> = (props: ISupplyProps): JSX.Element => {
 
   const toggleShowAllItems = () => {
     setShowAllItems((prevShowAllItems) => !prevShowAllItems);
-    setDisplayedItemsCount((prevCount) => (prevCount === 5 ? 12 : 5));
+    setDisplayedItemsCount((prevCount: number) =>
+      showAllItems ? prevCount + 5 : 0
+    );
   };
 
   const formatDateForFrontend = (date: string | Date): string => {
@@ -47,6 +50,44 @@ const Supply: React.FC<ISupplyProps> = (props: ISupplyProps): JSX.Element => {
     }
   };
 
+  const getStatusStyle = (status: string): React.CSSProperties => {
+    const commonStyle: React.CSSProperties = {
+      padding: "4px 8px", // Adjust padding to your liking
+      borderRadius: "4px", // Add rounded corners
+      fontWeight: "bold", // Make the text bold
+    };
+
+    switch (status.toLowerCase()) {
+      case "new":
+        return {
+          ...commonStyle,
+          color: "white",
+          backgroundColor: "#3498db", // Softer blue
+        };
+      case "in progress":
+        return {
+          ...commonStyle,
+          color: "white",
+          backgroundColor: "#997c09", // Softer yellow
+        };
+      case "approved":
+        return {
+          ...commonStyle,
+          color: "white",
+          backgroundColor: "#19bf5f", // Softer green
+        };
+      case "rejected":
+        return {
+          ...commonStyle,
+          color: "white",
+          backgroundColor: "#da3d2c", // Softer red
+        };
+      default:
+        return {
+          ...commonStyle,
+        }; // Default style if status doesn't match any case
+    }
+  };
   const [requestItems, setRequestItems] = React.useState<ISupplyRequest[]>([]);
 
   React.useEffect(() => {
@@ -80,6 +121,12 @@ const Supply: React.FC<ISupplyProps> = (props: ISupplyProps): JSX.Element => {
       minWidth: 100,
       maxWidth: 200,
       isResizable: true,
+      onRender: (item: ISupplyRequest) => {
+        const status = item.Status;
+        const statusStyle = getStatusStyle(status);
+      
+        return <div style={statusStyle}>{status}</div>;
+      },
     },
     {
       key: "column3",
@@ -158,7 +205,7 @@ const Supply: React.FC<ISupplyProps> = (props: ISupplyProps): JSX.Element => {
       {requestItems.length > displayedItemsCount && (
         <div>
           <DefaultButton
-            text={showAllItems ? "Show Less" : "Show More"}
+            text={showAllItems ? "Show Less" : "Show All"}
             onClick={toggleShowAllItems}
           />
         </div>

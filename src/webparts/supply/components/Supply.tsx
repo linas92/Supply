@@ -20,7 +20,7 @@ const Supply: React.FC<ISupplyProps> = (props) => {
   const Services = new SupplyServices(context);
 
   const [showForm, setShowForm] = useState<boolean>(false);
-  const [showAllItems, setShowAllItems] = useState<boolean>(false);
+  const [showAllItems] = useState<boolean>(false);
   const [displayedItemsCount, setDisplayedItemsCount] = useState<number>(5);
   const [requestItems, setRequestItems] = useState<ISupplyRequest[]>([]);
 
@@ -28,8 +28,15 @@ const Supply: React.FC<ISupplyProps> = (props) => {
     const fetchData = async () => {
       try {
         const response = await Services.getListItems();
-        setRequestItems(response);
-        console.log(response);
+
+        const sortedItems = response.sort((a, b) => {
+          const dateA = new Date(a.Created).getTime();
+          const dateB = new Date(b.Created).getTime();
+          return dateB - dateA;
+        });
+
+        setRequestItems(sortedItems);
+        console.log(sortedItems);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -39,20 +46,33 @@ const Supply: React.FC<ISupplyProps> = (props) => {
   }, []);
 
   const refreshList = async () => {
+    console.log("Refresh button clicked");
     try {
       const response = await Services.getListItems();
-      setRequestItems(response);
-      console.log(response);
+      const sortedItems = response.sort((a, b) => {
+        const dateA = new Date(a.Created).getTime();
+        const dateB = new Date(b.Created).getTime();
+        return dateB - dateA;
+      });
+
+      setRequestItems(sortedItems);
     } catch (error) {
       console.error("Error refreshing data:", error);
     }
   };
+  
+
   const openForm = () => setShowForm(true);
   const closeForm = () => setShowForm(false);
 
-  const toggleShowAllItems = () => {
-    setShowAllItems((prevShowAllItems) => !prevShowAllItems);
-    setDisplayedItemsCount((prevCount) => (showAllItems ? prevCount + 5 : 0));
+  const showMoreItems = () => {
+    if (displayedItemsCount + 5 <= requestItems.length) {
+      setDisplayedItemsCount((prevCount) => prevCount + 5);
+    }
+  };
+
+  const showLessItems = () => {
+    setDisplayedItemsCount((prevCount) => Math.max(prevCount - 5, 5));
   };
 
   const formatDateForFrontend = (date: string | Date): string => {
@@ -84,22 +104,23 @@ const Supply: React.FC<ISupplyProps> = (props) => {
     return { ...commonStyle, ...(statusColors[status.toLowerCase()] || {}) };
   };
 
-  //#region const columns: IColumn[] = [
-  const columns: IColumn[] = [
+
+    //#region const columns: IColumn[] = [
+      const columns: IColumn[] = [
     {
-      key: "column1",
+      key: "columnTitle",
       name: "Title",
       fieldName: "Title",
-      minWidth: 100,
-      maxWidth: 200,
+      minWidth: 50,
+      maxWidth: 100,
       isResizable: true,
     },
     {
-      key: "column2",
+      key: "columnStatus",
       name: "Status",
       fieldName: "Status",
-      minWidth: 100,
-      maxWidth: 200,
+      minWidth: 80,
+      maxWidth: 80,
       isResizable: true,
       onRender: (item: ISupplyRequest) => {
         const status = item.Status;
@@ -109,11 +130,11 @@ const Supply: React.FC<ISupplyProps> = (props) => {
       },
     },
     {
-      key: "column3",
+      key: "columnDueDate",
       name: "Due Date",
       fieldName: "DueDate",
-      minWidth: 100,
-      maxWidth: 200,
+      minWidth: 60,
+      maxWidth: 60,
       isResizable: true,
       onRender: (item: ISupplyRequest) => {
         const formattedDueDate = formatDateForFrontend(item.DueDate);
@@ -121,26 +142,26 @@ const Supply: React.FC<ISupplyProps> = (props) => {
       },
     },
     {
-      key: "column4",
+      key: "columnRequestArea",
       name: "Request Area",
       fieldName: "RequestArea",
-      minWidth: 100,
-      maxWidth: 200,
+      minWidth: 110,
+      maxWidth: 120,
       isResizable: true,
     },
     {
-      key: "column5",
+      key: "columnRequestType",
       name: "Request Type",
-      fieldName: "RequestType", // Verify this matches the field internal name
-      minWidth: 100,
-      maxWidth: 200,
+      fieldName: "RequestType",
+      minWidth: 120,
+      maxWidth: 120,
       isResizable: true,
       onRender: (item: ISupplyRequest) => {
         return item.RequestType ? item.RequestType.LookupValue : "";
       },
     },
     {
-      key: "column6",
+      key: "columnDescription",
       name: "Description",
       fieldName: "Description",
       minWidth: 100,
@@ -153,13 +174,21 @@ const Supply: React.FC<ISupplyProps> = (props) => {
   return (
     <section>
       <DefaultButton text="Create New Request" onClick={openForm} />
+
       <DefaultButton
         text="Refresh List"
         onClick={refreshList}
         className={styles.refreshButton}
       />
+
       {showForm && (
-        <Modal isOpen={showForm} onDismiss={closeForm} isBlocking={false}>
+        <Modal
+          isOpen={showForm}
+          onDismiss={closeForm}
+          isBlocking={false}
+          containerClassName={styles.customModalContainer}
+        >
+          <div className={styles.modalHeader}>New Request Creation:</div>
           <DynamicForm
             context={props.context}
             listId={"c8dd8f7c-f6a6-4b0d-a550-2389b114894f"}
@@ -176,25 +205,25 @@ const Supply: React.FC<ISupplyProps> = (props) => {
       )}
 
       <DetailsList
-        items={
-          showAllItems
-            ? requestItems
-            : requestItems.slice(0, displayedItemsCount)
-        }
+        items={requestItems.slice(0, displayedItemsCount)}
         columns={columns}
         selectionMode={SelectionMode.none}
         layoutMode={DetailsListLayoutMode.fixedColumns}
-        key={showAllItems.toString()}
+        key={displayedItemsCount.toString()}
       />
 
-      {requestItems.length > displayedItemsCount && (
-        <div>
-          <DefaultButton
-            text={showAllItems ? "Show Less" : "Show All"}
-            onClick={toggleShowAllItems}
-          />
-        </div>
-      )}
+      <div>
+        <DefaultButton
+          text="Show More"
+          onClick={showMoreItems}
+          disabled={showAllItems}
+        />
+        <DefaultButton
+          text="Show Fewer"
+          onClick={showLessItems}
+          disabled={displayedItemsCount <= 5}
+        />
+      </div>
     </section>
   );
 };

@@ -34,5 +34,20 @@ div {
 }
 
 .refreshButton {
-  margin-right: 10px;
+  text-align: right;
+}
+
+.customModalContainer {
+  width: 70%;
+  max-width: 700px;
+  height: 90vh;
+  max-height: 1000px;
+  scale: 80%;
+}
+
+.modalHeader {
+  padding: 8px;
+  font-weight: bold;
+  text-align: center;
+  font-size: large;
 }

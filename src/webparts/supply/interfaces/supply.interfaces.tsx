@@ -5,16 +5,19 @@ export interface ISupplyRequest {
   DueDate: Date;
   ExecutionDate: Date;
   RequestType: {
-    LookupId: string;
+    LookupId: number;
     LookupValue: string;
   };
   RequestArea: string;
   AssignedManager: {
-    LookupId: number;
-    LookupValue: string;
+    Id: number;
+    Title: string;
+    Email: string;
   };
+  SelectedManager?: any;
   Tags: string[];
   Status: string;
+  Created: string;
 }
 
 export interface ISupplyRequestType {

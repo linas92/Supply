@@ -5,7 +5,7 @@ export interface ISupplyRequest {
   DueDate: Date;
   ExecutionDate: Date;
   RequestType: {
-    LookupId: number;
+    LookupId: string;
     LookupValue: string;
   };
   RequestArea: string;

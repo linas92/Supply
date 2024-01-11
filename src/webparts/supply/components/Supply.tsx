@@ -13,6 +13,7 @@ import {
 import { DefaultButton } from "@fluentui/react";
 import { DynamicForm } from "@pnp/spfx-controls-react/lib/DynamicForm";
 import { useEffect, useState } from "react";
+import styles from "./Supply.module.scss";
 
 const Supply: React.FC<ISupplyProps> = (props) => {
   const { context } = props;
@@ -37,6 +38,15 @@ const Supply: React.FC<ISupplyProps> = (props) => {
     fetchData();
   }, []);
 
+  const refreshList = async () => {
+    try {
+      const response = await Services.getListItems();
+      setRequestItems(response);
+      console.log(response);
+    } catch (error) {
+      console.error("Error refreshing data:", error);
+    }
+  };
   const openForm = () => setShowForm(true);
   const closeForm = () => setShowForm(false);
 
@@ -121,7 +131,7 @@ const Supply: React.FC<ISupplyProps> = (props) => {
     {
       key: "column5",
       name: "Request Type",
-      fieldName: "RequestType",
+      fieldName: "RequestType", // Verify this matches the field internal name
       minWidth: 100,
       maxWidth: 200,
       isResizable: true,
@@ -143,6 +153,11 @@ const Supply: React.FC<ISupplyProps> = (props) => {
   return (
     <section>
       <DefaultButton text="Create New Request" onClick={openForm} />
+      <DefaultButton
+        text="Refresh List"
+        onClick={refreshList}
+        className={styles.refreshButton}
+      />
       {showForm && (
         <Modal isOpen={showForm} onDismiss={closeForm} isBlocking={false}>
           <DynamicForm

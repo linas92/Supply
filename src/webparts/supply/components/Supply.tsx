@@ -84,7 +84,7 @@ const Supply: React.FC<ISupplyProps> = (props) => {
       return "Invalid Date";
     }
   };
-//#region ugly...
+//#region Ugly...
   const getStatusStyle = (status: string): React.CSSProperties => {
     const commonStyle: React.CSSProperties = {
       padding: "4px 8px",
@@ -103,7 +103,7 @@ const Supply: React.FC<ISupplyProps> = (props) => {
 
     return { ...commonStyle, ...(statusColors[status.toLowerCase()] || {}) };
   };
-  //#endregion
+//#endregion 
       const columns: IColumn[] = [
 {
       key: "columnEdit",
@@ -111,20 +111,26 @@ const Supply: React.FC<ISupplyProps> = (props) => {
       fieldName: "Edit",
       minWidth: 30,
       onRender: (item) => {
+        function openFormForEdit(item: any): void {
+          throw new Error("Function not implemented.");
+        }
+
+        function removeRequest(Id: any): void {
+          throw new Error("Function not implemented.");
+        }
+
         return (
           <React.Fragment>
             <DefaultButton
               className={styles.editButton}
-              onClick={() => console.log(item)}
-              // onClick={() => openFormForEdit(item)}
+              onClick={() => openFormForEdit(item)}
             >
               Edit
             </DefaultButton>
 
             <DefaultButton
               text="Delete"
-              // onClick={() => removeRequest(item.Id)}
-              onClick={() => console.log(item)}
+              onClick={() => removeRequest(item.Id)}
               className={styles.deleteButton}
             />
           </React.Fragment>

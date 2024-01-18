@@ -18,6 +18,7 @@ export interface ISupplyRequest {
   Tags: string[];
   Status: string;
   Created: string;
+  IsUrgent?: boolean;
 }
 
 export interface ISupplyRequestType {

@@ -84,7 +84,7 @@ const Supply: React.FC<ISupplyProps> = (props) => {
       return "Invalid Date";
     }
   };
-
+//#region ugly...
   const getStatusStyle = (status: string): React.CSSProperties => {
     const commonStyle: React.CSSProperties = {
       padding: "4px 8px",
@@ -103,10 +103,34 @@ const Supply: React.FC<ISupplyProps> = (props) => {
 
     return { ...commonStyle, ...(statusColors[status.toLowerCase()] || {}) };
   };
-
-
-    //#region const columns: IColumn[] = [
+  //#endregion
       const columns: IColumn[] = [
+{
+      key: "columnEdit",
+      name: "",
+      fieldName: "Edit",
+      minWidth: 30,
+      onRender: (item) => {
+        return (
+          <React.Fragment>
+            <DefaultButton
+              className={styles.editButton}
+              onClick={() => console.log(item)}
+              // onClick={() => openFormForEdit(item)}
+            >
+              Edit
+            </DefaultButton>
+
+            <DefaultButton
+              text="Delete"
+              // onClick={() => removeRequest(item.Id)}
+              onClick={() => console.log(item)}
+              className={styles.deleteButton}
+            />
+          </React.Fragment>
+        );
+      },
+    },
     {
       key: "columnTitle",
       name: "Title",
@@ -169,7 +193,6 @@ const Supply: React.FC<ISupplyProps> = (props) => {
       isResizable: true,
     },
   ];
-  //#endregion
 
   return (
     <section>

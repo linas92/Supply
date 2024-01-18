@@ -29,13 +29,6 @@
   }
 }
 
-div {
-  text-align: left;
-}
-
-.refreshButton {
-  text-align: right;
-}
 
 .customModalContainer {
   width: 70%;
@@ -50,4 +43,25 @@ div {
   font-weight: bold;
   text-align: center;
   font-size: large;
+}
+
+div {
+  text-align: left;
+}
+
+.refreshButton {
+  margin-left: 443px;
+}
+
+.editButton {
+  transform: scale(1);
+  margin-left: -30px; /* Adjust the right margin to move it to the left */
+  height: 40px; /* Set the height to make it taller */
+  width: 1%;
+}
+
+.deleteButton {
+  margin-left: 222px;
+  background-color: red;
+  color: white;
 }

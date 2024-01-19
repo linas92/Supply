@@ -20,13 +20,14 @@ const Supply: React.FC<ISupplyProps> = (props) => {
 
   const [showAllItems] = useState<boolean>(false);
   const [showForm, setShowForm] = useState<boolean>(false);
+  const [sortByNewest, setSortByNewest] = useState<boolean>(true);
   const [requestItems, setRequestItems] = useState<ISupplyRequest[]>([]);
   const [displayedItemsCount, setDisplayedItemsCount] = useState<number>(5);
-  const [sortByNewest, setSortByNewest] = useState<boolean>(true);
+  const [itemToDelete, setItemToDelete] = useState<ISupplyRequest | null>(null);
 
   useEffect(() => {
     fetchData();
-  }, [sortByNewest]); // Trigger fetchData when sortByNewest changes
+  }, [sortByNewest]);
 
   const fetchData = async () => {
     try {
@@ -35,13 +36,38 @@ const Supply: React.FC<ISupplyProps> = (props) => {
       let sortedItems = response.sort((a, b) => {
         const dateA = new Date(a.Created).getTime();
         const dateB = new Date(b.Created).getTime();
-        return sortByNewest ? dateB - dateA : dateA - dateB; // Toggle sorting order
+        return sortByNewest ? dateB - dateA : dateA - dateB;
       });
 
       setRequestItems(sortedItems);
       console.log(sortedItems);
     } catch (error) {
       console.error("Error fetching data:", error);
+    }
+  };
+
+  const openConfirmationDialog = (item: ISupplyRequest) => {
+    setItemToDelete(item);
+  };
+
+  const closeConfirmationDialog = () => {
+    setItemToDelete(null);
+  };
+
+  const deleteRequest = async () => {
+    if (itemToDelete) {
+      try {
+        await Services.deleteListItem(
+          "c8dd8f7c-f6a6-4b0d-a550-2389b114894f",
+          itemToDelete.Id
+        );
+
+        await fetchData();
+      } catch (error) {
+        console.error("Error deleting data:", error);
+      } finally {
+        closeConfirmationDialog();
+      }
     }
   };
 
@@ -102,38 +128,17 @@ const Supply: React.FC<ISupplyProps> = (props) => {
   //#endregion
   const columns: IColumn[] = [
     {
-      key: "columnEdit",
+      key: "columnX",
       name: "",
-      fieldName: "Edit",
+      fieldName: "X",
       minWidth: 30,
-      onRender: (item) => {
-        function openFormForEdit(item: any): void {
-          throw new Error("Function not implemented.");
-        }
-
-        function removeRequest(Id: any): void {
-          throw new Error("Function not implemented.");
-        }
-
-        return (
-          <React.Fragment>
-            <DefaultButton
-              className={styles.editButton}
-              onClick={() => openFormForEdit(item)}
-            >
-              Edit
-            </DefaultButton>
-
-            <DefaultButton
-              text="Delete"
-              onClick={() => removeRequest(item.Id)}
-              className={styles.deleteButton}
-            >
-              Delete
-            </DefaultButton>
-          </React.Fragment>
-        );
-      },
+      onRender: (item) => (
+        <DefaultButton
+          text="X"
+          onClick={() => openConfirmationDialog(item)}
+          className={styles.editButton}
+        />
+      ),
     },
     {
       key: "columnTitle",
@@ -258,6 +263,18 @@ const Supply: React.FC<ISupplyProps> = (props) => {
           disabled={displayedItemsCount <= 5}
         />
       </div>
+      {itemToDelete && (
+        <Modal
+          isOpen={itemToDelete !== null}
+          onDismiss={closeConfirmationDialog}
+          isBlocking={false}
+        >
+          <div className={styles.modalHeader}>Confirm Deletion</div>
+          <p>Are you sure you want to delete the selected item?</p>
+          <DefaultButton text="Cancel" onClick={closeConfirmationDialog} />
+          <DefaultButton text="Delete" onClick={deleteRequest} />
+        </Modal>
+      )}
     </section>
   );
 };

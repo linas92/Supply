@@ -82,7 +82,7 @@ const Supply: React.FC<ISupplyProps> = (props) => {
       return "Invalid Date";
     }
   };
-  //#region Ugly...
+  //#region Ugly region...
   const getStatusStyle = (status: string): React.CSSProperties => {
     const commonStyle: React.CSSProperties = {
       padding: "4px 8px",

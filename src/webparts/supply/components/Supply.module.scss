@@ -29,7 +29,6 @@
   }
 }
 
-
 .customModalContainer {
   width: 70%;
   max-width: 700px;
@@ -45,12 +44,11 @@
   font-size: large;
 }
 
-div {
-  text-align: left;
-}
-
 .refreshButton {
   margin-left: 443px;
+}
+.sortButton {
+  margin-left: -250px;
 }
 
 .editButton {
@@ -64,4 +62,24 @@ div {
   margin-left: 222px;
   background-color: red;
   color: white;
+}
+
+.new {
+  color: white;
+  background-color: #3498db;
+}
+
+.inProgress {
+  color: white;
+  background-color: #997c09;
+}
+
+.approved {
+  color: white;
+  background-color: #19bf5f;
+}
+
+.rejected {
+  color: white;
+  background-color: #da3d2c;
 }

@@ -40,8 +40,11 @@ export default class SupplyServices {
       .items();
     return items;
   };
-  
-  public addListItem = async (listId: string, newItem: any): Promise<number> => {
+
+  public addListItem = async (
+    listId: string,
+    newItem: any
+  ): Promise<number> => {
     try {
       const result = await this.sp.web.lists.getById(listId).items.add(newItem);
       console.log(`Item added with ID: ${result.data.Id}`);

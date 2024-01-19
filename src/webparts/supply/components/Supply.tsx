@@ -1,5 +1,4 @@
 import * as React from "react";
-import "./Supply.module.scss";
 import { ISupplyProps } from "../interfaces/ISupplyProps";
 import SupplyServices from "../services/services";
 import { ISupplyRequest } from "../interfaces/supply.interfaces";
@@ -19,48 +18,45 @@ const Supply: React.FC<ISupplyProps> = (props) => {
   const { context } = props;
   const Services = new SupplyServices(context);
 
-  const [showForm, setShowForm] = useState<boolean>(false);
   const [showAllItems] = useState<boolean>(false);
-  const [displayedItemsCount, setDisplayedItemsCount] = useState<number>(5);
+  const [showForm, setShowForm] = useState<boolean>(false);
   const [requestItems, setRequestItems] = useState<ISupplyRequest[]>([]);
+  const [displayedItemsCount, setDisplayedItemsCount] = useState<number>(5);
+  const [sortByNewest, setSortByNewest] = useState<boolean>(true);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await Services.getListItems();
-
-        const sortedItems = response.sort((a, b) => {
-          const dateA = new Date(a.Created).getTime();
-          const dateB = new Date(b.Created).getTime();
-          return dateB - dateA;
-        });
-
-        setRequestItems(sortedItems);
-        console.log(sortedItems);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
     fetchData();
-  }, []);
+  }, [sortByNewest]); // Trigger fetchData when sortByNewest changes
+
+  const fetchData = async () => {
+    try {
+      const response = await Services.getListItems();
+
+      let sortedItems = response.sort((a, b) => {
+        const dateA = new Date(a.Created).getTime();
+        const dateB = new Date(b.Created).getTime();
+        return sortByNewest ? dateB - dateA : dateA - dateB; // Toggle sorting order
+      });
+
+      setRequestItems(sortedItems);
+      console.log(sortedItems);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const refreshList = async () => {
     console.log("Refresh button clicked");
     try {
-      const response = await Services.getListItems();
-      const sortedItems = response.sort((a, b) => {
-        const dateA = new Date(a.Created).getTime();
-        const dateB = new Date(b.Created).getTime();
-        return dateB - dateA;
-      });
-
-      setRequestItems(sortedItems);
+      await fetchData();
     } catch (error) {
       console.error("Error refreshing data:", error);
     }
   };
-  
+
+  const toggleSortOrder = () => {
+    setSortByNewest((prevSortOrder) => !prevSortOrder);
+  };
 
   const openForm = () => setShowForm(true);
   const closeForm = () => setShowForm(false);
@@ -68,11 +64,13 @@ const Supply: React.FC<ISupplyProps> = (props) => {
   const showMoreItems = () => {
     if (displayedItemsCount + 5 <= requestItems.length) {
       setDisplayedItemsCount((prevCount) => prevCount + 5);
+      console.log("showMoreItems button clicked");
     }
   };
 
   const showLessItems = () => {
     setDisplayedItemsCount((prevCount) => Math.max(prevCount - 5, 5));
+    console.log("showLessItems button clicked");
   };
 
   const formatDateForFrontend = (date: string | Date): string => {
@@ -84,14 +82,13 @@ const Supply: React.FC<ISupplyProps> = (props) => {
       return "Invalid Date";
     }
   };
-//#region Ugly...
+  //#region Ugly...
   const getStatusStyle = (status: string): React.CSSProperties => {
     const commonStyle: React.CSSProperties = {
       padding: "4px 8px",
       borderRadius: "4px",
       fontWeight: "bold",
     };
-
     const statusColors: {
       [key: string]: { color: string; backgroundColor: string };
     } = {
@@ -100,12 +97,11 @@ const Supply: React.FC<ISupplyProps> = (props) => {
       approved: { color: "white", backgroundColor: "#19bf5f" },
       rejected: { color: "white", backgroundColor: "#da3d2c" },
     };
-
     return { ...commonStyle, ...(statusColors[status.toLowerCase()] || {}) };
   };
-//#endregion 
-      const columns: IColumn[] = [
-{
+  //#endregion
+  const columns: IColumn[] = [
+    {
       key: "columnEdit",
       name: "",
       fieldName: "Edit",
@@ -132,7 +128,9 @@ const Supply: React.FC<ISupplyProps> = (props) => {
               text="Delete"
               onClick={() => removeRequest(item.Id)}
               className={styles.deleteButton}
-            />
+            >
+              Delete
+            </DefaultButton>
           </React.Fragment>
         );
       },
@@ -202,13 +200,20 @@ const Supply: React.FC<ISupplyProps> = (props) => {
 
   return (
     <section>
-      <DefaultButton text="Create New Request" onClick={openForm} />
-
+      <DefaultButton
+        text="Create New Request"
+        onClick={openForm}
+      ></DefaultButton>
       <DefaultButton
         text="Refresh List"
         onClick={refreshList}
         className={styles.refreshButton}
-      />
+      ></DefaultButton>
+      <DefaultButton
+        text={`Sort ${sortByNewest ? "Oldest First" : "Newest First"}`}
+        onClick={toggleSortOrder}
+        className={styles.sortButton}
+      ></DefaultButton>
 
       {showForm && (
         <Modal
